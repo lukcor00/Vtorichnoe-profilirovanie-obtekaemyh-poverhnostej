@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      changeDictionaryDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+boundary
+{
+    "rotor.*"
+    {
+        inGroups        List<word> 1(rotor);
+    }
+
+    "statorOutlet.*"
+    {
+        inGroups        List<word> 1(statorOutlet);
+    }
+
+    "statorInlet.*"
+    {
+        inGroups        List<word> 1(statorInlet);
+    }
+
+    "case.*"
+    {
+        inGroups        List<word> 1(case);
+    }
+}
+
+// ************************************************************************* //

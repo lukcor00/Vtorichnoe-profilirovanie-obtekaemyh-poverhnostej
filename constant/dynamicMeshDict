@@ -1,0 +1,36 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      dynamicMeshDict;
+}
+/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+
+timeScheme      ${${FOAM_CASE}/system/fvSchemes!ddtSchemes/default};
+
+#ifeq $timeScheme "(steadyState|localEuler)"
+mov mover-disabled;
+#else
+mov mover;
+#endif
+
+$mov
+{
+    type            motionSolver;
+
+    libs            ("libfvMeshMovers.so" "libfvMotionSolvers.so");
+
+    motionSolver    solidBody;
+    solidBodyMotionFunction  rotatingMotion;
+
+    $../BC!motion
+}

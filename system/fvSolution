@@ -1,0 +1,171 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    "p.*"
+    {
+    solver          PCG;
+    preconditioner
+    {
+        preconditioner  GAMG;
+        tolerance       1e-12;	//1e-06 1e-08
+        relTol          0.0;	//0.01 0
+        nVcycles        2;
+        smoother        GaussSeidel;
+        nPreSweeps      0;
+        nPostSweeps     2;
+        nFinestSweeps   2;
+        cacheAgglomeration false;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+    }
+    minIter 2;
+    maxIter 100;
+    tolerance       1e-12;
+    relTol          0.05;
+    }
+
+    Phi
+    {
+        solver GAMG;
+        agglomerator faceAreaPair;
+        mergeLevels 1;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 200;
+        tolerance 1e-6;
+        relTol 0.01;
+        smoother GaussSeidel;
+        nPreSweeps 0;
+        nPostSweeps 2;
+        nFinestSweeps 2;
+        minIter 1;
+    }
+
+    MeshPhi
+    {
+        solver          smoothSolver;
+        smoother        symGaussSeidel;
+        tolerance       1e-2;
+        relTol          0;
+    }
+
+    // U
+    // {
+    //     type coupled;
+    //     solver PBiCCCG;
+    //     preconditioner DILU;
+    //     tolerance (1e-08 1e-08 1e-08);
+    //     relTol (0 0 0);
+    //     minIter 3;
+    // }
+
+    U
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-12;
+        relTol          0.1;
+        minIter 2;
+    }
+
+    "(k|omega|epsilon)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-12;
+        relTol          0.1;
+        minIter 2;
+    }
+
+    "(k|omega|epsilon|U)Final"
+    {
+        $U
+        relTol 0;
+    }
+
+    "p.*Final"
+    {
+        $p
+        relTol 0;
+    }
+}
+
+"(PIMPLE|PISO)"
+{
+    correctPhi          yes;
+    correctMeshPhi      yes;
+    nOuterCorrectors    1;
+    nCorrectors         1;
+    nNonOrthogonalCorrectors 3;
+    #ifeq $turbModel kEpsilon
+    residualControl
+    {
+        p               1e-2;
+        U               1e-2;
+        "(k|omega|epsilon)" 1e-2;
+    }
+    #else
+    residualControl
+    {
+        p               1e-3;
+        U               1e-3;
+        "(k|omega|epsilon)" 1e-3;
+    }
+    #endif
+}
+
+potentialFlow
+{
+    nNonOrthogonalCorrectors 15;
+}
+
+relaxationFactors
+{
+    turbModel      ${${FOAM_CASE}/BC!turbulent/model};
+    #ifeq $turbModel kEpsilon
+    fields
+    {
+        p               0.5;
+    }
+    equations
+    {
+        U               0.7;
+        "(k|omega|epsilon)" 0.7;
+    }
+    #else
+    fields
+    {
+        p               0.3;
+    }
+    equations
+    {
+        U               0.5;
+        "(k|omega|epsilon)" 0.5;
+    }
+    #endif
+    // equations
+    // {
+    //     ".*" 1;
+    // }
+}
+
+cache
+{
+    grad(U);
+}
+
+// ************************************************************************* //

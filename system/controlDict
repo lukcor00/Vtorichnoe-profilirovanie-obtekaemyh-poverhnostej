@@ -1,0 +1,98 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     foamRun;
+
+solver          incompressibleFluid;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         3300;	//5000 - 10000
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   300;	//
+
+purgeWrite      1;	//5;
+
+writeFormat     binary;	//binary/ascii
+
+writePrecision  12;
+
+writeCompression false;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+maxCo 1;
+
+
+// ************************************************************************* //
+
+functions
+{
+// #includeFunc residuals(fields=(p U k epsilon nut))
+// #includeFunc patchFlowRate(patch=inlet, log=true)
+// #includeFunc patchFlowRate(patch=outlet, log=true)
+// #includeFunc patchAverage(patch=inlet,fields=(p), log=true)
+// #includeFunc cellMaxMag(fields=(p U), log=true)
+// #includeFunc yPlus
+
+
+// turbFields
+// {
+//   type            turbulenceFields;
+//   libs            ("libfieldFunctionObjects.so");
+
+//   turbModel      ${${FOAM_CASE}/BC!turbulent/model};
+
+//   #ifeq $turbModel kEpsilon
+//   fields          (omega);
+//   #else
+//   fields          (epsilon);
+//   #endif
+  
+//   executeControl  writeTime;
+//   writeControl    writeTime;
+// }
+
+
+// fvSchemes
+// {
+//   type              timeActivatedFileUpdate;
+//   libs              ("libutilityFunctionObjects.so");
+//   writeControl      timeStep;
+//   writeInterval     1;
+//   fileToUpdate      "$FOAM_CASE/system/fvSchemes";
+//   timeVsFile
+//   (
+//       (-1 "$FOAM_CASE/system/fvSchemes.1")
+//       (50 "$FOAM_CASE/system/fvSchemes.2")
+//   );
+// }
+
+
+}
+
+// ************************************************************************* //

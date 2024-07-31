@@ -1,0 +1,84 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSchemes;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+ddtSchemes // Guide
+{
+  //  Most Stable:        Euler;
+  //                      CrankNicolson 0.9; // 0 = Euler, 1 = Pure CrankNicolson
+  //  Most Accurate:      backward;
+  //  Only steady-state:  steadyState;
+
+  default         steadyState;
+
+}
+
+gradSchemes // Guide
+{
+  //  Most Stable:        Gauss linear;
+  //  Most Accurate:      leastSquares;
+   
+  // Add limiter for stability
+  default         cellLimited Gauss linear 1;
+  grad(U)         cellLimited Gauss linear 1;
+  grad(p)         cellLimited Gauss linear 0.5;
+}
+
+divSchemes // Guide
+{
+  //  default         none; // Best practice
+
+  //  Most Stable:    Gauss upwind;
+   
+  //  // Note, the order isn't exact here
+  //  Average:        Gauss limitedLinear 1.0;
+  //                  Gauss linearUpwind <gradScheme>; // Must specify gradScheme
+  //                  Gauss vanLeer;
+  //                  Gauss QUICK;
+
+  //  Most Accurate:  Gauss linear
+   
+  //  Steady state:   bounded Gauss limitedLinear 1.0;
+}
+
+laplacianSchemes // Guide
+{
+  // Pattern:        Gauss <interoplation> <snGrad>;
+
+  default         Gauss linear limited corrected 0.5;
+}
+
+interpolationSchemes // Guide
+{
+  default         linear;
+}
+
+snGradSchemes // Guide
+{
+  //  Max non-ortho < 0.5 deg:    orthogonal;
+  //  Max non-ortho < 5   deg:    uncorrected;
+  //  Max non-ortho < 70  deg:    corrected;
+  //  Max non-ortho < 80  deg:    limited corrected 0.5;
+  //  Max non-ortho > 80  deg:    // Make a better mesh.
+  default         limited corrected 0.5;
+}
+
+wallDist
+{
+  method meshWave;
+}
+
+// ************************************************************************* //

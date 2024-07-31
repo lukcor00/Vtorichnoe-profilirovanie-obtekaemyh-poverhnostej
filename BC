@@ -1,0 +1,59 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format          binary;
+    class           dictionary;
+    object          BC;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+material
+{
+    viscousityModel constant;
+    nu              3.38164e-06;
+}
+
+turbulent
+{
+    simulationType  RAS;
+    model           kOmegaSST;
+    k               0.015;
+    nut             0;
+    epsilon         0.598821;
+    omega           443.571;
+    kWall           0.015;
+    omegaWall       443.571;
+    epsilonWall     0.598821;
+    nutWall         0;
+    intensity       0.1;
+    mixingLength    0.00087;
+}
+
+flow
+{
+    Uinternal       ( 0 0 0 );
+    p               0;
+    volumetricFlowRate 0.0001;
+}
+
+geometrical
+{
+    angleOfAttack   0;
+}
+
+motion
+{
+    axis            ( 0 0 1 );
+    origin          ( 0 0 0 );
+    rpm             10000;
+    cellZone        rotor;
+}
+
+
+// ************************************************************************* //

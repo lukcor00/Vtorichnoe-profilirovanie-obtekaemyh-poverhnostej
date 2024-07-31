@@ -1,0 +1,71 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |				
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11                                   	
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     foamRun;
+
+solver          incompressibleFluid;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         1001;	//5000 - 10000
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   500;	//
+
+purgeWrite      3;	//5;
+
+writeFormat     binary;	//binary/ascii
+
+writePrecision  12;
+
+writeCompression false;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+// ************************************************************************* //
+
+functions
+{
+  #includeFunc CourantNo
+  #includeFunc Q
+  #includeFunc shearStress
+  #includeFunc vorticity
+  #includeFunc wallShearStress
+  #includeFunc yPlus
+  #includeFunc cellMaxMag(fields=(shearStress))
+  #includeFunc mag(field=shearStress)
+  #includeFunc volAverage(fields=(mag(shearStress)))
+  #includeFunc forcesIncompressible(patches=(rotor), rhoInf=1035, CofR=(0 0 0), pitchAxis=(0 0 -1))
+  #includeFunc staticPressureIncompressible(rhoInf=1035)
+  #includeFunc totalPressureIncompressible(rhoInf=1035)
+  #includeFunc patchFlowRate(patch=inlet)
+  #includeFunc patchFlowRate(patch=outlet)
+  #includeFunc patchDifference(patch1=outlet, patch2=inlet, fields=(p))
+  #includeFunc patchDifference(patch1=outlet, patch2=inlet, fields=(static(p)))
+  #includeFunc patchDifference(patch1=outlet, patch2=inlet, fields=(total(p)))
+}
+
+// ************************************************************************* //

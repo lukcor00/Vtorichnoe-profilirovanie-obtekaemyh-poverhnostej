@@ -1,0 +1,31 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      fvConstraints;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+limitU
+{
+	type limitMag;
+  field  U;
+	active yes;
+	selectionMode all;
+	max 500;
+}
+
+// limitP
+// {
+//   type       limitPressure;
+//   minFactor  0.2;
+//   maxFactor  2;	
+// }
+// ************************************************************************* //

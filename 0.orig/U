@@ -1,0 +1,86 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       volVectorField;
+    location    "0";
+    object      U;
+}
+/*---------------------------------------------------------------------------*/
+/*---------------------------------------------------------------------------*/
+
+$../BC!flow
+$../BC!motion
+
+dimensions [0 1 -1 0 0 0 0];
+
+internalField uniform (0 0 0);
+
+boundaryField
+{
+	#includeEtc "caseDicts/setConstraintTypes"
+
+	inlet
+	{
+        type            flowRateInletVelocity;
+        volumetricFlowRate    constant $volumetricFlowRate;
+        value           uniform (0 0 0);
+	}
+
+	outlet
+	{
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
+	}
+
+	wall
+	{
+		type	noSlip;
+	}
+
+    rotor
+    {
+        timeScheme      ${${FOAM_CASE}/system/fvSchemes!ddtSchemes/default};
+    #ifeq $timeScheme "(steadyState|localEuler)"
+        type            MRFnoSlip;
+    #else
+        type            movingWallVelocity;
+    #endif
+        value           uniform (0 0 0);
+    }
+
+	walls_rotor
+	{
+		type rotatingWallVelocity;
+		origin	$origin;
+		axis	$axis;
+		rpm		$rpm;
+		value uniform (0 0 0);
+	}
+
+	walls_rotor_tip
+	{
+		type rotatingWallVelocity;
+		origin	$origin;
+		axis	$axis;
+		rpm		$rpm;
+		value uniform (0 0 0);
+	}
+
+	NCC
+	{
+        timeScheme      ${${FOAM_CASE}/system/fvSchemes!ddtSchemes/default};
+    #ifeq $timeScheme "(steadyState|localEuler)"
+        type            MRFslip;
+    #else
+        type            movingWallSlipVelocity;
+    #endif
+		value	uniform (0 0 0);
+	}
+}

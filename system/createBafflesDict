@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      createBaffleDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+internalFacesOnly true;
+noFields    true;
+
+baffles
+{
+    NCC
+    {
+        type faceZone;
+        zoneName interface;
+        patches
+        {
+            owner
+            {
+                name    NCC_1;
+                type    patch;
+            }
+            neighbour
+            {
+                name    NCC_1_SHADOW;
+                type    patch;
+            }
+        }
+    }
+}
